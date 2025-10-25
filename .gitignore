@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+.env
+# Node/React
+node_modules/
+build/
+dist/
+.env.local
+.env.production
+npm-debug.log*
+# Data files (add large datasets to .gitignore)
+*.csv
+*.parquet
+*.h5
+data/raw/
+data/processed/
+!data/sample/  # Keep sample data
+# IDE
+.vscode/
+.idea/
+*.swp
+# OS
+.DS_Store
+Thumbs.db
+# Model files
+*.pkl
+*.joblib
+*.h5
+models/saved/
+# Database
+*.db
+*.sqlite
