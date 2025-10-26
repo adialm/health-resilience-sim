@@ -1,4 +1,12 @@
-// Scenario and intervention types
+/**
+ * Scenario and Intervention Type Definitions
+ * 
+ * Defines the structure for policy scenarios, healthcare interventions, and simulation results.
+ * Supports flexible scenario building with multiple intervention types and policy configurations.
+ * Results can be tracked over time to evaluate intervention effectiveness.
+ * 
+ * @module scenario.types
+ */
 
 export type InterventionType = 'clinic' | 'hospital' | 'vaccination' | 'policy' | 'event';
 

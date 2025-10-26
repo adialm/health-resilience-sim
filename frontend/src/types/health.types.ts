@@ -1,4 +1,12 @@
-// Health metrics and data types
+/**
+ * Health Data Type Definitions
+ * 
+ * TypeScript interfaces for health metrics, neighborhood data, and resilience scoring.
+ * These types ensure type safety across the application and standardize health data
+ * structures from multiple sources (Boston Public Health Commission, U.S. Census).
+ * 
+ * @module health.types
+ */
 
 export interface HealthMetric {
   id: string;
