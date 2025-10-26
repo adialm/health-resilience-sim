@@ -1,3 +1,15 @@
+/**
+ * Healthcare Simulation Engine
+ * 
+ * Models the impact of policy interventions on community health outcomes using
+ * real Boston Public Health Commission data. Supports scenario testing for:
+ * - Healthcare facility placement (clinics, hospitals)
+ * - Public health campaigns (vaccination programs)
+ * - Policy adjustments (access levels, funding, duration)
+ * 
+ * @module simulationEngine
+ */
+
 import { Intervention } from '../types/scenario.types';
 import { calculateBaselineFromRealData, INTERVENTION_LEVERS } from '../constants/realHealthData';
 

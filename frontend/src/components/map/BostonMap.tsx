@@ -1,3 +1,19 @@
+/**
+ * Interactive Boston Health Map Component
+ * 
+ * Visualizes health disparities across Boston neighborhoods using census tract data.
+ * Features include:
+ * - Heatmap visualization of health risk levels across 222 census tracts
+ * - Census tract boundary display with detailed health metrics
+ * - Interactive popups showing real-time health data and demographics
+ * - Intervention placement for policy scenario testing
+ * - Toggle between heatmap and boundary visualization modes
+ * 
+ * Data sources: Boston Public Health Commission, U.S. Census Bureau
+ * 
+ * @component
+ */
+
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
