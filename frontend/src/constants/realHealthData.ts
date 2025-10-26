@@ -2,6 +2,9 @@
  * Real health data from Boston census tracts
  * Aggregated from Boston_Health_Resilience_Data_Pack
  * Source: Census tract baseline data, aggregated to ZIP level
+ * 
+ * Demographics data helps identify health disparities across communities
+ * and supports equity-focused intervention planning.
  */
 
 export interface RealZipData {
