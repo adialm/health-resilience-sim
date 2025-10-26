@@ -1,0 +1,56 @@
+{
+  "02119": {
+    "name": "Roxbury",
+    "population": 8424,
+    "cardiometabolic": 26.3,
+    "accessBarriers": 8.9,
+    "asthma": 13.4,
+    "overdose": 0,
+    "riskLevel": "high"
+  },
+  "02121": {
+    "name": "Dorchester",
+    "population": 22602,
+    "cardiometabolic": 25.8,
+    "accessBarriers": 8.3,
+    "asthma": 13.5,
+    "overdose": 0,
+    "riskLevel": "high"
+  },
+  "02130": {
+    "name": "Jamaica Plain",
+    "population": 8429,
+    "cardiometabolic": 17.1,
+    "accessBarriers": 3.6,
+    "asthma": 10.5,
+    "overdose": 0,
+    "riskLevel": "medium"
+  },
+  "02134": {
+    "name": "Allston",
+    "population": 20263,
+    "cardiometabolic": 11.9,
+    "accessBarriers": 3.8,
+    "asthma": 11.4,
+    "overdose": 0,
+    "riskLevel": "low"
+  },
+  "02135": {
+    "name": "Brighton",
+    "population": 10584,
+    "cardiometabolic": 17.3,
+    "accessBarriers": 3.4,
+    "asthma": 10.8,
+    "overdose": 0,
+    "riskLevel": "medium"
+  },
+  "02215": {
+    "name": "Fenway/Kenmore",
+    "population": 2416,
+    "cardiometabolic": 20.1,
+    "accessBarriers": 6.2,
+    "asthma": 12.0,
+    "overdose": 0,
+    "riskLevel": "medium"
+  }
+}

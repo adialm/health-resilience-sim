@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from './theme/theme';
+import MainLayout from './components/layout/MainLayout';
+import { useStore } from './store';
+import { baselineScenario } from './constants/mockData';
 
 function App() {
+  const { setCurrentScenario } = useStore();
+
+  // Initialize with baseline scenario
+  useEffect(() => {
+    setCurrentScenario(baselineScenario);
+  }, [setCurrentScenario]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <MainLayout />
+    </ThemeProvider>
   );
 }
 
