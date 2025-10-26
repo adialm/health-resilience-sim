@@ -32,6 +32,12 @@ const LeftPanel: React.FC = () => {
     setPlacementMode, 
     currentScenario,
     removeIntervention,
+    healthcareAccessLevel,
+    fundingLevel,
+    simulationDuration,
+    setHealthcareAccessLevel,
+    setFundingLevel,
+    setSimulationDuration,
   } = useStore();
   const [selectedZip, setSelectedZip] = React.useState('');
 
@@ -184,10 +190,11 @@ const LeftPanel: React.FC = () => {
 
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" gutterBottom>
-            Healthcare Access
+            Healthcare Access: {healthcareAccessLevel}%
           </Typography>
           <Slider
-            defaultValue={60}
+            value={healthcareAccessLevel}
+            onChange={(_, value) => setHealthcareAccessLevel(value as number)}
             valueLabelDisplay="auto"
             marks
             min={0}
@@ -195,16 +202,17 @@ const LeftPanel: React.FC = () => {
             sx={{ mt: 1 }}
           />
           <Typography variant="caption" color="text.secondary">
-            Adjust baseline access level
+            Infrastructure quality (affects intervention effectiveness)
           </Typography>
         </Box>
 
         <Box sx={{ mt: 3 }}>
           <Typography variant="body2" gutterBottom>
-            Funding Level
+            Funding Level: {fundingLevel}%
           </Typography>
           <Slider
-            defaultValue={40}
+            value={fundingLevel}
+            onChange={(_, value) => setFundingLevel(value as number)}
             valueLabelDisplay="auto"
             marks
             min={0}
@@ -212,7 +220,7 @@ const LeftPanel: React.FC = () => {
             sx={{ mt: 1 }}
           />
           <Typography variant="caption" color="text.secondary">
-            Budget allocation percentage
+            Budget adequacy (affects intervention effectiveness)
           </Typography>
         </Box>
       </Box>
@@ -226,10 +234,11 @@ const LeftPanel: React.FC = () => {
         </Typography>
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" gutterBottom>
-            Duration: 5 years
+            Duration: {simulationDuration} {simulationDuration === 1 ? 'year' : 'years'}
           </Typography>
           <Slider
-            defaultValue={5}
+            value={simulationDuration}
+            onChange={(_, value) => setSimulationDuration(value as number)}
             valueLabelDisplay="auto"
             marks
             min={1}
@@ -238,7 +247,7 @@ const LeftPanel: React.FC = () => {
             sx={{ mt: 1 }}
           />
           <Typography variant="caption" color="text.secondary">
-            Projection timeframe
+            Projection timeframe (scales intervention effects)
           </Typography>
         </Box>
       </Box>

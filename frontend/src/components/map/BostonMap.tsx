@@ -74,34 +74,86 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
       map.current.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
 
       // Wait for map to load
-      map.current.on('load', () => {
+      map.current.on('load', async () => {
         if (!map.current) return;
         
         // Notify parent that map is ready
         if (onMapReady) onMapReady(true);
         setMapLoaded(true);
 
-        // Use mockNeighborhoods for beautiful visualization (organic shapes, stays on land)
-        // Filter out areas where we don't have real data (Cambridge, South End)
-        const filteredNeighborhoods = mockNeighborhoods.filter(n => 
-          n.name !== 'Cambridge' && n.name !== 'South End'
-        );
-        
-        // We'll overlay real ZIP data in popups and metrics
-        const neighborhoodsGeoJSON = neighborhoodsToGeoJSON(filteredNeighborhoods);
-        const heatmapGeoJSON = neighborhoodsToHeatmapGeoJSON(filteredNeighborhoods);
+        // Load detailed census tract GeoJSON
+        try {
+          const response = await fetch('/processed_boston_tracts.geojson');
+          const tractGeoJSON = await response.json();
+          
+          // Generate heatmap points from tract data
+          const heatmapPoints: any[] = [];
+          tractGeoJSON.features.forEach((feature: any) => {
+            const props = feature.properties;
+            const coords = feature.geometry.coordinates[0];
+            
+            // Calculate centroid of tract polygon
+            const lons = coords.map((c: number[]) => c[0]);
+            const lats = coords.map((c: number[]) => c[1]);
+            const centerLon = lons.reduce((a: number, b: number) => a + b, 0) / lons.length;
+            const centerLat = lats.reduce((a: number, b: number) => a + b, 0) / lats.length;
+            
+            // Generate multiple points per tract for smoother heatmap
+            const pointsPerTract = Math.max(5, Math.floor(props.population / 1000));
+            for (let i = 0; i < pointsPerTract; i++) {
+              // Distribute points within tract bounds
+              const variation = 0.002;
+              heatmapPoints.push({
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [
+                    centerLon + (Math.random() - 0.5) * variation,
+                    centerLat + (Math.random() - 0.5) * variation
+                  ]
+                },
+                properties: {
+                  weight: props.risk_score || 10,
+                  riskValue: props.risk_level === 'high' ? 3 : props.risk_level === 'medium' ? 2 : 1
+                }
+              });
+            }
+          });
+          
+          const heatmapGeoJSON: GeoJSON.FeatureCollection = {
+            type: 'FeatureCollection',
+            features: heatmapPoints
+          };
 
-        // Add source for neighborhoods (polygons with realistic shapes)
-        map.current.addSource(SOURCE_IDS.NEIGHBORHOODS, {
-          type: 'geojson',
-          data: neighborhoodsGeoJSON,
-        });
+          // Add source for census tracts (detailed polygon boundaries)
+          map.current!.addSource(SOURCE_IDS.NEIGHBORHOODS, {
+            type: 'geojson',
+            data: tractGeoJSON,
+          });
 
-        // Add source for heatmap (dense points for smooth gradient)
-        map.current.addSource(SOURCE_IDS.HEATMAP, {
-          type: 'geojson',
-          data: heatmapGeoJSON,
-        });
+          // Add source for heatmap (dense points based on tract data)
+          map.current!.addSource(SOURCE_IDS.HEATMAP, {
+            type: 'geojson',
+            data: heatmapGeoJSON,
+          });
+        } catch (error) {
+          console.error('Error loading tract GeoJSON:', error);
+          // Fallback to mock data if tract data fails to load
+          const filteredNeighborhoods = mockNeighborhoods.filter(n => 
+            n.name !== 'Cambridge' && n.name !== 'South End'
+          );
+          const neighborhoodsGeoJSON = neighborhoodsToGeoJSON(filteredNeighborhoods);
+          const heatmapGeoJSON = neighborhoodsToHeatmapGeoJSON(filteredNeighborhoods);
+          
+          map.current!.addSource(SOURCE_IDS.NEIGHBORHOODS, {
+            type: 'geojson',
+            data: neighborhoodsGeoJSON,
+          });
+          map.current!.addSource(SOURCE_IDS.HEATMAP, {
+            type: 'geojson',
+            data: heatmapGeoJSON,
+          });
+        }
 
         // Add heatmap layer (smooth, organic visualization) - visible by default
         map.current.addLayer({
@@ -164,7 +216,7 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
           },
         });
 
-        // Add subtle ZIP boundaries layer (always visible)
+        // Add census tract boundaries layer (visible only in boundaries mode)
         map.current.addLayer({
           id: LAYER_IDS.ZIP_BOUNDARIES,
           type: 'line',
@@ -172,7 +224,10 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
           paint: {
             'line-color': '#ffffff',
             'line-width': 1.5,
-            'line-opacity': 0.4,
+            'line-opacity': 0.5,
+          },
+          layout: {
+            'visibility': 'none', // Start hidden in heatmap mode
           },
         });
 
@@ -273,36 +328,24 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
           const properties = feature.properties;
 
           if (properties) {
-            // Map neighborhood to real ZIP data for accurate health metrics
-            const neighborhoodName = properties.name;
-            
-            // Try to find matching real ZIP data
-            // (This maps mock neighborhood names to real ZIP codes)
-            const nameToZip: Record<string, string> = {
-              'Roxbury': '02119',
-              'Dorchester': '02121',
-              'Jamaica Plain': '02130',
-              'Allston': '02134',
-              'Brighton': '02135',
-              'Fenway': '02215',
-              'Back Bay': '02215', // Also Fenway/Kenmore
-            };
-            
-            const matchedZip = nameToZip[neighborhoodName];
-            const realZipData = matchedZip ? bostonZipCodes.find(z => z.zipCode === matchedZip) : null;
-            
-            // Use real data if available, otherwise fallback to mock data
-            const displayData = realZipData ? {
-              name: `${neighborhoodName} (${matchedZip})`,
-              riskLevel: realZipData.riskLevel,
-              asthma: realZipData.realData.healthProblems.pediatricAsthma.score,
-              cardiometabolic: realZipData.realData.healthProblems.cardiometabolic.score,
-              accessBarriers: realZipData.realData.healthProblems.accessBarriers.score,
-              population: realZipData.population,
+            // Display tract-specific data from the new detailed GeoJSON
+            const displayData = properties.ZIP_CODE ? {
+              // Tract-level data
+              name: `Tract ${properties.GEOID?.toString().slice(-6) || 'Unknown'}`,
+              zipCode: properties.ZIP_CODE,
+              zipName: properties.ZIP_NAME,
+              riskLevel: properties.risk_level || 'medium',
+              asthma: properties.asthma_prevalence || 0,
+              cardiometabolic: ((properties.diabetes_prevalence || 0) + (properties.hypertension_rate || 0) + (properties.obesity_rate || 0)) / 3,
+              accessBarriers: properties.uninsured_pct || 0,
+              population: properties.population || 0,
               isReal: true,
               message: null,
             } : {
-              name: neighborhoodName,
+              // Fallback for mock data (shouldn't happen with tract GeoJSON)
+              name: properties.name || 'Unknown',
+              zipCode: 'N/A',
+              zipName: 'N/A',
               riskLevel: properties.riskLevel || 'medium',
               asthma: properties.cancerRate ? Math.round(properties.cancerRate / 20) : 12,
               cardiometabolic: properties.cancerRate ? Math.round(properties.cancerRate / 15) : 20,
@@ -325,18 +368,22 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
             currentPopup = new mapboxgl.Popup({ 
               closeButton: false, 
               closeOnClick: false,
-              maxWidth: '340px'
+              maxWidth: '360px'
             })
               .setLngLat(coordinates)
               .setHTML(
                 `
                 <div style="padding: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #1e293b;">${displayData.name}</h4>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: #1e293b;">${displayData.name}</h4>
                     <span style="padding: 2px 8px; font-size: 11px; font-weight: 600; color: white; background: ${riskColor}; border-radius: 4px;">${riskLabel}</span>
                   </div>
+                  ${displayData.zipCode && displayData.zipCode !== 'N/A' 
+                    ? `<div style="font-size: 11px; color: #64748b; margin-bottom: 8px;">📍 ${displayData.zipName} (${displayData.zipCode})</div>`
+                    : ''
+                  }
                   ${displayData.isReal 
-                    ? '<div style="font-size: 11px; color: #10b981; margin-bottom: 8px;">✓ Real Census Data</div>' 
+                    ? '<div style="font-size: 11px; color: #10b981; margin-bottom: 8px;">✓ Real Census Tract Data</div>' 
                     : `<div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px; font-style: italic;">${displayData.message}</div>`
                   }
                   <div style="font-size: 13px; color: #475569; line-height: 1.8;">
@@ -349,7 +396,7 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
                       <strong>${typeof displayData.cardiometabolic === 'number' ? displayData.cardiometabolic.toFixed(1) + '%' : displayData.cardiometabolic}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
-                      <span>🏥 Access Barriers:</span>
+                      <span>🏥 Uninsured:</span>
                       <strong>${typeof displayData.accessBarriers === 'number' ? displayData.accessBarriers.toFixed(1) + '%' : displayData.accessBarriers}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px solid #e2e8f0;">
@@ -466,13 +513,17 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
     if (!map.current || !mapLoaded) return;
 
     if (mapMode === 'heatmap') {
+      // Heatmap mode: Show smooth gradient, hide boundaries
       map.current.setLayoutProperty(LAYER_IDS.HEATMAP, 'visibility', 'visible');
       map.current.setLayoutProperty(LAYER_IDS.NEIGHBORHOODS, 'visibility', 'none');
       map.current.setLayoutProperty(LAYER_IDS.NEIGHBORHOODS_OUTLINE, 'visibility', 'none');
+      map.current.setLayoutProperty(LAYER_IDS.ZIP_BOUNDARIES, 'visibility', 'none'); // Hide white lines
     } else {
+      // Boundaries mode: Show tract outlines with boundaries
       map.current.setLayoutProperty(LAYER_IDS.HEATMAP, 'visibility', 'none');
       map.current.setLayoutProperty(LAYER_IDS.NEIGHBORHOODS, 'visibility', 'visible');
       map.current.setLayoutProperty(LAYER_IDS.NEIGHBORHOODS_OUTLINE, 'visibility', 'visible');
+      map.current.setLayoutProperty(LAYER_IDS.ZIP_BOUNDARIES, 'visibility', 'visible'); // Show white lines
     }
   }, [mapMode, mapLoaded]);
 

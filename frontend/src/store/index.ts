@@ -12,6 +12,11 @@ interface AppState {
   simulationResults: SimulationResult[];
   currentMetrics: SimulationMetrics;
 
+  // Policy sliders (connected to simulation logic)
+  healthcareAccessLevel: number; // 0-100, represents baseline infrastructure
+  fundingLevel: number; // 0-100, represents budget adequacy
+  simulationDuration: number; // 1-10 years
+
   // Map state
   selectedNeighborhood: Neighborhood | null;
   mapLayers: {
@@ -47,6 +52,11 @@ interface AppState {
   toggleMapLayer: (layer: keyof AppState['mapLayers']) => void;
   setPlacementMode: (mode: 'clinic' | 'hospital' | 'vaccination' | null) => void;
   
+  // Policy slider actions
+  setHealthcareAccessLevel: (level: number) => void;
+  setFundingLevel: (level: number) => void;
+  setSimulationDuration: (years: number) => void;
+  
   runSimulation: () => Promise<void>;
   setSimulationProgress: (progress: number) => void;
   setSimulationResults: (results: SimulationResult[]) => void;
@@ -66,6 +76,11 @@ export const useStore = create<AppState>((set, get) => ({
   simulationProgress: 0,
   simulationResults: [],
   currentMetrics: getBaselineMetrics(),
+  
+  // Policy slider initial values
+  healthcareAccessLevel: 60, // Default: moderate infrastructure
+  fundingLevel: 40, // Default: moderate funding
+  simulationDuration: 5, // Default: 5 years
   
   selectedNeighborhood: null,
   mapLayers: {
@@ -187,9 +202,14 @@ export const useStore = create<AppState>((set, get) => ({
 
   setPlacementMode: (mode) => set({ placementMode: mode }),
 
+  // Policy slider actions
+  setHealthcareAccessLevel: (level) => set({ healthcareAccessLevel: level }),
+  setFundingLevel: (level) => set({ fundingLevel: level }),
+  setSimulationDuration: (years) => set({ simulationDuration: years }),
+
   // Simulation actions
   runSimulation: async () => {
-    const { currentScenario } = get();
+    const { currentScenario, healthcareAccessLevel, fundingLevel, simulationDuration } = get();
     if (!currentScenario) return;
 
     set({ isSimulationRunning: true, simulationProgress: 0 });
@@ -208,9 +228,14 @@ export const useStore = create<AppState>((set, get) => ({
       set({ simulationProgress: step.progress });
     }
 
-    // Calculate results based on interventions
+    // Calculate results based on interventions AND policy settings
     const interventions = currentScenario.interventions;
-    const metrics = calculateSimulationResults(interventions);
+    const metrics = calculateSimulationResults(
+      interventions, 
+      simulationDuration,
+      healthcareAccessLevel,
+      fundingLevel
+    );
     
     set({ 
       currentMetrics: metrics,
