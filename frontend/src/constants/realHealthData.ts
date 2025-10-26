@@ -8,6 +8,13 @@ export interface RealZipData {
   zip: string;
   name: string;
   population: number;
+  demographics?: {
+    white: number;
+    black: number;
+    hispanic: number;
+    asian: number;
+    other: number;
+  };
   metrics: {
     Asthma_Prevalence: number;
     Diabetes_Prevalence: number;
@@ -66,6 +73,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02119',
     name: 'Roxbury',
     population: 8424,
+    demographics: {
+      white: 54.28,
+      black: 12.78,
+      hispanic: 18.06,
+      asian: 11.04,
+      other: 3.84  // American Indian, Pacific Islander, Other, Two+ races
+    },
     metrics: {
       Asthma_Prevalence: 13.37,
       Diabetes_Prevalence: 12.98,
@@ -113,6 +127,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02121',
     name: 'Dorchester',
     population: 22602,
+    demographics: {
+      white: 36.82,
+      black: 14.08,
+      hispanic: 24.58,
+      asian: 20.13,
+      other: 4.39
+    },
     metrics: {
       Asthma_Prevalence: 13.53,
       Diabetes_Prevalence: 12.71,
@@ -160,6 +181,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02130',
     name: 'Jamaica Plain',
     population: 8429,
+    demographics: {
+      white: 40.45,
+      black: 15.19,
+      hispanic: 25.28,
+      asian: 13.24,
+      other: 5.84
+    },
     metrics: {
       Asthma_Prevalence: 10.5,
       Diabetes_Prevalence: 7.35,
@@ -207,6 +235,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02134',
     name: 'Allston',
     population: 20263,
+    demographics: {
+      white: 58.77,
+      black: 12.42,
+      hispanic: 13.85,
+      asian: 11.48,
+      other: 3.48
+    },
     metrics: {
       Asthma_Prevalence: 11.38,
       Diabetes_Prevalence: 3.84,
@@ -254,6 +289,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02135',
     name: 'Brighton',
     population: 10584,
+    demographics: {
+      white: 44.84,
+      black: 22.81,
+      hispanic: 21.63,
+      asian: 6.64,
+      other: 4.08
+    },
     metrics: {
       Asthma_Prevalence: 10.79,
       Diabetes_Prevalence: 6.75,
@@ -301,6 +343,13 @@ export const REAL_ZIP_DATA: RealZipData[] = [
     zip: '02215',
     name: 'Fenway/Kenmore',
     population: 2416,
+    demographics: {
+      white: 42.59,
+      black: 19.74,
+      hispanic: 20.38,
+      asian: 8.60,
+      other: 8.69
+    },
     metrics: {
       Asthma_Prevalence: 12.04,
       Diabetes_Prevalence: 7.84,

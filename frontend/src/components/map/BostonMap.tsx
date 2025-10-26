@@ -5,6 +5,7 @@ import { Box, Typography, Alert, ToggleButtonGroup, ToggleButton, Paper } from '
 import { useStore } from '../../store';
 import { mockNeighborhoods } from '../../constants/mockData';
 import { bostonZipCodes } from '../../constants/zipCodeData';
+import { REAL_ZIP_DATA } from '../../constants/realHealthData';
 import { 
   neighborhoodsToGeoJSON, 
   neighborhoodsToHeatmapGeoJSON,
@@ -365,6 +366,10 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
             const riskColor = riskColors[displayData.riskLevel] || '#64748b';
             const riskLabel = displayData.riskLevel.toUpperCase();
             
+            // Get demographics data for the ZIP code
+            const zipDemographics = displayData.zipCode ? 
+              REAL_ZIP_DATA.find(z => z.zip === displayData.zipCode)?.demographics : null;
+            
             currentPopup = new mapboxgl.Popup({ 
               closeButton: false, 
               closeOnClick: false,
@@ -404,6 +409,31 @@ const BostonMap: React.FC<BostonMapProps> = ({ onMapReady }) => {
                       <strong>${typeof displayData.population === 'number' ? displayData.population.toLocaleString() : displayData.population}</strong>
                     </div>
                   </div>
+                  ${zipDemographics ? `
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                      <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 6px;">
+                        🌍 Demographics (${displayData.zipCode})
+                      </div>
+                      <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                          <span>White:</span>
+                          <strong>${zipDemographics.white.toFixed(1)}%</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                          <span>Black:</span>
+                          <strong>${zipDemographics.black.toFixed(1)}%</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                          <span>Hispanic/Latino:</span>
+                          <strong>${zipDemographics.hispanic.toFixed(1)}%</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                          <span>Asian:</span>
+                          <strong>${zipDemographics.asian.toFixed(1)}%</strong>
+                        </div>
+                      </div>
+                    </div>
+                  ` : ''}
                 </div>
               `
               )
