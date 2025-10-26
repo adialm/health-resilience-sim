@@ -9,12 +9,16 @@ Interactive data-driven system for testing healthcare policy impacts on communit
 A virtual policy lab that translates community health data into actionable strategies. This platform allows users to:
 - **Model** real-world health systems (clinics, hospitals, demographics)
 - **Simulate** interventions (add resources, change policies, model events)
-- **Visualize** community-specific health disparities
-- **Predict** health outcomes over 5-10 years
+- **Visualize** community-specific health disparities across 222 census tracts
+- **Predict** health outcomes over 5-10 years using real Boston Public Health Commission data
 - **Optimize** for equitable, effective interventions
 
 ### **Key Innovation**
-Focus on **hyper-local** community data — showing that Latino populations around Commonwealth Avenue near Boston University have 50% higher cancer incidence, not just city-wide averages.
+Uses **real census tract-level data** from Boston Public Health Commission to visualize health disparities at the most granular level. The platform integrates:
+- 222 census tracts across 6 Boston ZIP codes
+- Real health metrics (asthma, diabetes, hypertension, obesity, uninsured rates)
+- Community demographics (race/ethnicity composition)
+- Evidence-based intervention effects from public health research
 
 ---
 

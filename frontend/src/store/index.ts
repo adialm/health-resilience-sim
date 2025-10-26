@@ -1,3 +1,16 @@
+/**
+ * Global Application State Management
+ * 
+ * Centralized state store using Zustand for the Health Resilience Simulation Platform.
+ * Manages:
+ * - Scenario building and intervention tracking
+ * - Real-time simulation execution and progress monitoring
+ * - Policy configuration (healthcare access, funding, duration)
+ * - Interactive map state and intervention placement
+ * 
+ * @module store
+ */
+
 import { create } from 'zustand';
 import { Scenario, Intervention, PolicyChange, Event, SimulationResult } from '../types/scenario.types';
 import { Neighborhood } from '../types/health.types';
