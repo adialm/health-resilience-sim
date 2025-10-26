@@ -75,7 +75,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 16.53,
       Uninsured: 8.86,
       LifeExpectancy: 48.02,
-      OverdoseRate: 0.0,
+      OverdoseRate: 80.8, // Roxbury overdose deaths per 100k (2020-2022)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -103,8 +103,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 13.4
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 80.8, // Age-adjusted overdose deaths per 100k (2020-2022)
+        score: 80.8
       }
     },
     riskLevel: 'high'
@@ -122,7 +122,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 16.32,
       Uninsured: 8.32,
       LifeExpectancy: 77.56,
-      OverdoseRate: 0.0,
+      OverdoseRate: 93.5, // Dorchester overdose deaths per 100k (2020-2022)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -150,8 +150,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 13.5
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 93.5, // Age-adjusted overdose deaths per 100k (2020-2022)
+        score: 93.5
       }
     },
     riskLevel: 'high'
@@ -169,7 +169,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 8.74,
       Uninsured: 3.59,
       LifeExpectancy: 81.18,
-      OverdoseRate: 0.0,
+      OverdoseRate: 48.9, // Jamaica Plain overdose deaths per 100k (2020-2022)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -197,8 +197,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 10.5
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 48.9, // Age-adjusted overdose deaths per 100k (2020-2022)
+        score: 48.9
       }
     },
     riskLevel: 'medium'
@@ -216,7 +216,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 8.41,
       Uninsured: 3.83,
       LifeExpectancy: 0.0,
-      OverdoseRate: 0.0,
+      OverdoseRate: 45.9, // Allston overdose deaths per 100k (2020-2022, combined Allston/Brighton)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -244,8 +244,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 11.4
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 45.9, // Age-adjusted overdose deaths per 100k (2020-2022, combined Allston/Brighton)
+        score: 45.9
       }
     },
     riskLevel: 'low'
@@ -263,7 +263,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 9.29,
       Uninsured: 3.44,
       LifeExpectancy: 0.0,
-      OverdoseRate: 0.0,
+      OverdoseRate: 45.9, // Brighton overdose deaths per 100k (2020-2022, combined Allston/Brighton)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -291,8 +291,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 10.8
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 45.9, // Age-adjusted overdose deaths per 100k (2020-2022, combined Allston/Brighton)
+        score: 45.9
       }
     },
     riskLevel: 'medium'
@@ -310,7 +310,7 @@ export const REAL_ZIP_DATA: RealZipData[] = [
       Smoking: 13.78,
       Uninsured: 6.19,
       LifeExpectancy: 0.0,
-      OverdoseRate: 0.0,
+      OverdoseRate: 33.3, // Fenway/Kenmore overdose deaths per 100k (2020-2022)
       InfantMortality_per1k: 0.0,
       LowBirthweight: 0.0,
       CliniciansPer10k: 0.0,
@@ -338,8 +338,8 @@ export const REAL_ZIP_DATA: RealZipData[] = [
         score: 12.0
       },
       substanceUse: {
-        overdoseRate: 0.0,
-        score: 0
+        overdoseRate: 33.3, // Age-adjusted overdose deaths per 100k (2020-2022)
+        score: 33.3
       }
     },
     riskLevel: 'medium'
